@@ -1,66 +1,30 @@
-## Foundry
+## View functions to integrate:
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+    ### EthenaEagerToken.sol
+        ERC4626:
+            - Quote convert underlying (usde) to shares (eagerToken) -> /** @dev See {IERC4626-previewDeposit}. */
+            - Quote convert shares (eagerToken) to underlying (usde) -> /** @dev See {IERC4626-previewRedeem}. */
+    ### LRTVault.sol
+        ERC4626:
+            - Quote convert underlying (LRT) to shares (LRT receipt) -> /** @dev See {IERC4626-previewDeposit}. */
+            - Quote convert shares (LRT receipt) to underlying (LRT) -> /** @dev See {IERC4626-previewRedeem}. */
 
-Foundry consists of:
+Contracts call to integrate:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- function deposit(uint256 assets, address receiver) public virtual returns (uint256)
+- function redeem(uint256 shares, address receiver, address owner) public virtual returns (uint256)
 
-## Documentation
+### Calculate yield distribution
 
-https://book.getfoundry.sh/
+`yieldOracle` public function of EthenaEagerToken returns the vault for minting (eusde) to (usde), which distribute the yield to ethena holders.
+The `function _skim()` of EthenaEagerToken.sol contains the logic for calculating the amount of yield the vault distributes to LRTVault depositors, calculating the amount of assets (usde) equivalent to the amount of underlying deposited in the EthenaEagerToken vault. The diff between the last calculation and the current calculation is the amount of yield to distribute, but the actual APY should be gathered from the ethena vault instead of the EthenaEagerVault.
+Knowing that there is N amount of eusde deposited in the vault and the yield ethena provides to the token, one can calculate the amount of yield that will be distribute to LRTDepositors.
 
-## Usage
+### SLASHED condition
 
-### Build
+Once the LRTVault is slashed, deposits are no longer available and the state variable `SLASHED` contains the slashed status. A new EthernaEagerVault with it's corresponding LRTVault should be create to emit a new insured version (this might change in the future)
 
-```shell
-$ forge build
-```
+### TODO
 
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+1. Still need to calculate the depeg amount to trigger LRT slash based on the diff between the expectedPeg of the EthenaEagerToken and the actual oracle value (gathered from Chainlink for the POC).
+2. Still need to perform the market buy between the insured token and the LRT underlying to transfer the 20% rewards in the underlying token to the LRTVault instead of plain transferring Ethena to take advantage of the ERC4626 implementation of the LRT vault.
