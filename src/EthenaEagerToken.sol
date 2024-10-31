@@ -33,8 +33,8 @@ contract EthenaEagerToken is ERC4626 {
     }
 
     modifier checkSlash() {
-        _slash();
         if (SLASHED) revert LRTVaultSlashed();
+        _slash();
         _;
     }
 
@@ -113,6 +113,8 @@ contract EthenaEagerToken is ERC4626 {
     }
 
     function _slash() internal {
+        if (SLASHED) revert LRTVaultSlashed();
+
         if (_checkSlashCondition()) {
             SLASHED = true;
             lrtVault.slashVault();
