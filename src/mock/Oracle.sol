@@ -6,10 +6,10 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract Oracle is Ownable {
     constructor() Ownable(msg.sender) {}
 
-    int256 public answer;
+    int256 public answer = 100000000;
 
     function latestAnswer() external pure returns (int256 _answer) {
-        return 100000000;
+        return answer;
     }
 
     function decimals() external pure returns (uint8) {
