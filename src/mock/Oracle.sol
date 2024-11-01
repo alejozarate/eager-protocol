@@ -8,7 +8,7 @@ contract Oracle is Ownable {
 
     int256 public answer = 100000000;
 
-    function latestAnswer() external pure returns (int256 _answer) {
+    function latestAnswer() external view returns (int256 _answer) {
         return answer;
     }
 
