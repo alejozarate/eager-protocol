@@ -14,16 +14,21 @@ contract EagerFactory is Ownable {
     function deployEagerPair(address _insuredToken, address _lrtToken, address _insuredYieldOracle, address _pegOracle)
         external
         onlyOwner
+        returns (address)
     {
         IERC20Extended insuredToken = IERC20Extended(_insuredToken);
 
-        new EthenaEagerToken{salt: keccak256(abi.encodePacked(msg.sender, block.timestamp))}(
-            _insuredToken,
-            string(abi.encodePacked("Eager ", insuredToken.name())),
-            string(abi.encodePacked("e", insuredToken.symbol())),
-            _insuredYieldOracle,
-            _pegOracle,
-            _lrtToken
+        address eToken = address(
+            new EthenaEagerToken{salt: keccak256(abi.encodePacked(msg.sender, block.timestamp))}(
+                _insuredToken,
+                string(abi.encodePacked("Eager ", insuredToken.name())),
+                string(abi.encodePacked("e", insuredToken.symbol())),
+                _insuredYieldOracle,
+                _pegOracle,
+                _lrtToken
+            )
         );
+
+        return eToken;
     }
 }
