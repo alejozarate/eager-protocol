@@ -28,3 +28,13 @@ Once the LRTVault is slashed, deposits are no longer available and the state var
 
 1. Still need to calculate the depeg amount to trigger LRT slash based on the diff between the expectedPeg of the EthenaEagerToken and the actual oracle value (gathered from Chainlink for the POC).
 2. Still need to perform the market buy between the insured token and the LRT underlying to transfer the 20% rewards in the underlying token to the LRTVault instead of plain transferring Ethena to take advantage of the ERC4626 implementation of the LRT vault.
+
+### Deployment Addresses Arbitrum Sepolia
+
+EagerFactory 0xdBCC764ec05c056284d30869a27D94486Fd758F4
+EthenaPrimitive usde 0x923588E24D5f4d373c9514ca04E2Fe219C874638
+LRTToken 0x0fc8DD69670a17DfBFE3093DEE45332e944aB8b9
+Oracle 0xc2A3e236a1920432C0FC9Fc8877D306f36614e13
+Ethena Yield eusde (insured token) eusde 0xd730952a12c77ff1dF38950B274c73D3317C6fe6
+eToken 0x3aa6129e7112b109b58e4ebe5e55c40fbc8daf7b
+LRTVault 0xf20f033fcd9638778c56956365213aa7bc634bac
